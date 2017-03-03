@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.title = "search"
-        view.backgroundColor = UIColor.redColor()
+        view.backgroundColor = UIColor.red
         
         setUpTableView()
         setupSearchController()
@@ -48,22 +48,22 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
     }
@@ -87,22 +87,22 @@ extension ViewController{
  
     func setUpTableView() {
         
-        tableView = UITableView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width,UIScreen.mainScreen().bounds.height), style: UITableViewStyle.Plain)
-        tableView.backgroundColor = UIColor.whiteColor()
+        tableView = UITableView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width,height: UIScreen.main.bounds.height), style: UITableViewStyle.plain)
+        tableView.backgroundColor = UIColor.white
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.contentOffset = CGPointMake(0,44)
+        tableView.contentOffset = CGPoint(x: 0,y: 44)
         
         view.addSubview(tableView)
     }
 
     func setupSearchController (){
         
-        searchResultsController = UITableViewController(style: .Plain)
+        searchResultsController = UITableViewController(style: .plain)
         searchResultsController.tableView.delegate = self
         searchResultsController.tableView.dataSource = self
        // searchResultsController.tableView.rowHeight = 63
-        searchResultsController.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "LogCell")
+        searchResultsController.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "LogCell")
         
         searchController = UISearchController(searchResultsController: searchResultsController)
         searchController.searchResultsUpdater = self
@@ -120,11 +120,11 @@ extension ViewController{
     }
     
     // 搜索数据
-    func filterResultsWithSearchString(searchString: String, scope: String = "All"){
+    func filterResultsWithSearchString(_ searchString: String, scope: String = "All"){
         
         searchResults = dataSource.filter { candy in
             let categoryMatch = (scope == "All") || (candy.category == scope)
-            return categoryMatch && candy.name.lowercaseString.containsString(searchString.lowercaseString    )
+            return categoryMatch && candy.name.lowercased().contains(searchString.lowercased()    )
         }
         searchResultsController.tableView.reloadData()
     }
@@ -143,9 +143,9 @@ extension  ViewController{
 
 extension ViewController:UITableViewDelegate,UITableViewDataSource{
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
-        if searchController.active {
+        if searchController.isActive {
             return searchResults.count
         }else{
             return dataSource.count
@@ -153,27 +153,27 @@ extension ViewController:UITableViewDelegate,UITableViewDataSource{
     }
     
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
         
         var  cell: UITableViewCell!
         
-        if searchController.active && searchController.searchBar.text != "" {
-            cell = tableView.dequeueReusableCellWithIdentifier("Logcell")
+        if searchController.isActive && searchController.searchBar.text != "" {
+            cell = tableView.dequeueReusableCell(withIdentifier: "Logcell")
             if cell == nil {
-                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Logcell")
+                cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "Logcell")
             }
         }else{
-            cell = tableView.dequeueReusableCellWithIdentifier("cell")
+            cell = tableView.dequeueReusableCell(withIdentifier: "cell")
             
             if cell == nil {
-                cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell")
+                cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "cell")
             }
         }
         
         let candy:Candy
-        if searchController.active {
+        if searchController.isActive {
             candy = searchResults[indexPath.row]
         }else{
             candy = dataSource[indexPath.row]
@@ -186,10 +186,10 @@ extension ViewController:UITableViewDelegate,UITableViewDataSource{
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let title: String!
-        if searchController.active{
+        if searchController.isActive{
            title =  searchResults[indexPath.row].name
         }else{
             title = dataSource[indexPath.row].name
@@ -205,7 +205,7 @@ extension ViewController:UITableViewDelegate,UITableViewDataSource{
 
 extension ViewController: UISearchResultsUpdating{
     
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
+    func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
         filterResultsWithSearchString(searchController.searchBar.text!, scope: scope)
@@ -218,7 +218,7 @@ extension ViewController: UISearchResultsUpdating{
 
 extension ViewController:  UISearchBarDelegate{
     
-    func searchBar(searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         filterResultsWithSearchString(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
     }
 }
